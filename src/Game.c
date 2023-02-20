@@ -1,6 +1,8 @@
-#include "Game.h"
+#include <snake/Game.h>
 
 #include <unistd.h>
+#include <time.h>
+#include <stdlib.h>
 
 #ifdef LOCALE
 #include <locale.h>
@@ -16,16 +18,24 @@ g_loop(void) {
 
         switch(c) {
             case KEY_UP:
-                dir = Up;
+                if (dir != Down) {
+                    dir = Up;
+                }
                 break;
             case KEY_LEFT:
-                dir = Left;
+                if (dir != Right) {
+                    dir = Left;
+                }
                 break;
             case KEY_RIGHT:
-                dir = Right;
+                if (dir != Left) {
+                    dir = Right;
+                }
                 break;
             case KEY_DOWN:
-                dir = Down;
+                if (dir != Up) {
+                    dir = Down;
+                }
                 break;
             case 'q':
                 stdscr = NULL;
@@ -35,11 +45,14 @@ g_loop(void) {
                 break;
         }
 
-        usleep(10000);
+        usleep(100000);
     }
 
+    usleep(1500000);
     stdscr = NULL;
     free_board();
+
+    return;
 }
 
 void
@@ -61,6 +74,8 @@ g_setup(void) {
 #ifdef LOCALE
     setlocale(LOCALE, "");
 #endif
+
+    srand(time(NULL));
 
     init_board();
     snake = init_snake();

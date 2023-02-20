@@ -1,4 +1,6 @@
-#include "Snake.h"
+#include <snake/Snake.h>
+
+#include <stdlib.h>
 
 static void
 update_nodes(Node* head) {
@@ -38,7 +40,6 @@ s_init(void) {
 
     head->point.x = 10;
     head->point.y = 10;
-    head->current_dir = Up;
 
     head->NEXT = NULL;
     head->PREV = NULL;
@@ -73,32 +74,20 @@ s_move(Node* head, Direction u_dir) {
     head->saved.x = head->point.x;
     head->saved.y = head->point.y;
 
-    head->current_dir = u_dir;
-
     update_nodes(head->PREV);
 
     switch (u_dir) {
         case Down:
-            if (head->current_dir != Up) {
-                head->point.y++;
-            }
+            head->point.y--;
             break;
         case Left:
-            if (head->current_dir != Right) {
-                head->point.x--;
-            }
+            head->point.x--;
             break;
         case Right:
-            if (head->current_dir != Left) {
-                head->point.x++;
-            }
+            head->point.x++;
             break;
         case Up:
-            if (head->current_dir != Down) {
-                head->point.y++;
-            }
+            head->point.y++;
             break;
     }
-
-    head->current_dir = u_dir;
 }

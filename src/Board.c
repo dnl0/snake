@@ -1,14 +1,14 @@
-#include "Board.h"
+#include <snake/Board.h>
+
+#include <stdlib.h>
 
 #define SNAKE 1
 #define FRUIT 2
 
-#define hits_itself(o, t)   (t[o->point.y][o->point.x] == SNAKE)
-#define hits_fruit(o, t)    (t[o->point.y][o->point.x] == FRUIT)
-#define hits_border(o)      (o->point.y == BOARD_HEIGHT-1 || o->point.y == 0 || \
-                             o->point.x == BOARD_WIDTH -1 || o->point.x == 0)
-
-#define random_number       ((rand() % BOARD_HEIGHT-2) + 1)
+#define hits_itself(o, t)       (t[o->point.y][o->point.x] == SNAKE)
+#define hits_fruit(o, t)        (t[o->point.y][o->point.x] == FRUIT)
+#define hits_border(o)          (o->point.y == BOARD_HEIGHT-1 || o->point.y == 0 || \
+                                 o->point.x == BOARD_WIDTH -1 || o->point.x == 0)
 
 static void
 put_on_board(Node* head, int value) {
@@ -45,6 +45,20 @@ teleport_snake(Node* snake, Direction u_dir) {
     }
 }
 
+static int 
+random_number(void) {
+    return (rand() % (BOARD_WIDTH-3));
+}
+
+static int
+generate_fruit(int x, int y) {
+    if (board[y][x] != 0) {
+        return 0;
+    }
+
+    board[y][x] = 2;
+}
+
 void
 init_board(void) {
     board = (int**) malloc(BOARD_HEIGHT * sizeof(int*));
@@ -56,8 +70,6 @@ init_board(void) {
             board[i][o] = 0;
         }
     }
-
-    generate_fruit();
 }
 
 void
@@ -73,6 +85,10 @@ init_snake(void) {
     Node* snake = s_init();
 
     put_on_board(snake, 1);
+
+    while (!generate_fruit(random_number()+2, random_number()+2)) {
+        ;
+    }
 
     return snake;
 }
@@ -96,11 +112,17 @@ move_snake(Node* snake, Direction u_dir) {
     }
 
     // if snake eats fruit, it gains another Node, that stands in
-    // the place of the last Node, if it doesn't eat fruit, that
+    // the place of the last Node, if it does not eat fruit, that
     // point of last Node is cleared (because the last Node moved)
     if (hits_fruit(snake, board)) {
-        generate_fruit();
+        put_on_board(snake, 1);
+
+        while (!generate_fruit(random_number()+2, random_number()+2)) {
+            ;
+        }
+
         add_node(snake, last_point);
+        return 1;
     } else {
         board[last_point.y][last_point.x] = 0;
     }
@@ -108,17 +130,4 @@ move_snake(Node* snake, Direction u_dir) {
     put_on_board(snake, 1);
 
     return 1;
-}
-
-void
-generate_fruit(void) {
-    int x = random_number;
-    int y = random_number;
-
-    while (board[x][y] != 0) {
-        int x = random_number;
-        int y = random_number;
-    }
-
-    board[x][y] = 2;
 }

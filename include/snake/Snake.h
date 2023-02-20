@@ -1,7 +1,5 @@
 #pragma once
 
-#include <stdlib.h>
-
 typedef enum { Down, Left, Right, Up } Direction;
 
 typedef struct { int x; int y; } Point;
@@ -13,8 +11,6 @@ struct Node {
 
     Node* NEXT;
     Node* PREV;
-
-    Direction current_dir;
 
     int size;
 };

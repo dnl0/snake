@@ -1,7 +1,6 @@
 #pragma once
 
 #include <ncurses.h>
-#include <stdlib.h>
 
 #include "Board.h"
 
